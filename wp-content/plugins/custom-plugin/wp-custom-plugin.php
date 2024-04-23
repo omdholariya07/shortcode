@@ -12,43 +12,38 @@
  */
 
 require_once(plugin_dir_path(__FILE__) . 'interaction-tracking.php'); 
+require_once(plugin_dir_path(__FILE__) . 'admin-page.php'); 
+
 class Custom_Plugin {
 
     public function __construct() {
-
         define("PLUGIN_DIR_PATH", plugin_dir_path(__FILE__));
         define("PLUGIN_URL", plugins_url());
-        add_action("admin_menu", array($this, 'add_my_custom_menu'));
         add_action("wp_enqueue_scripts", array($this, 'custom_plugin_assets'));
         add_shortcode('button', array($this, 'shortcode'));
         add_action('wp_ajax_track_button_click', array($this, 'track_button_click'));
-        add_action('wp_ajax_nopriv_track_button_click', array($this, 'track_button_click')); 
-    }
-
-    public function add_my_custom_menu() {
-        add_menu_page(
-            "customplugin", 
-            "Custom Plugin", 
-            "manage_options", 
-            "custom-plugin", 
-            array($this, 'custom_admin_view'), 
-            "dashicons-dashboard", 
-            11 
-        );
-    }
-
-    public function custom_admin_view() {
-        echo "<h1>hello</h1>";
+        add_action('wp_ajax_get_button_stats', array($this, 'get_button_stats'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_chart_assets'));
+        // add_action('wp_ajax_track_button_click', 'track_button_click');
     }
 
     public function custom_plugin_assets() {
-        wp_enqueue_style("cpt_style", PLUGIN_URL."/custom-plugin/assets/css/style.css");
+        wp_enqueue_style("mystyle", PLUGIN_URL . "/custom-plugin/assets/css/style.css");
 
-        wp_enqueue_script('custom-tracking', PLUGIN_URL . '/custom-plugin/assets/js/script.js', array('jquery'), '1.0', true);
+        wp_enqueue_script('myscript', PLUGIN_URL . '/custom-plugin/assets/js/script.js', array('jquery'), '1.0', true);
+
+        wp_enqueue_script('admin-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-script.js', array('jquery'), '1.0', true);
+
+        wp_localize_script('myscript', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
+    }
+
+    public function enqueue_chart_assets() {
+        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true);
+
+        wp_enqueue_script('admin-page-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery', 'chart-js'), '1.0', true);
     }
     
     public function shortcode($atts) {
-        
         $atts = shortcode_atts(
             array(
                 'text' => 'Click Here',
@@ -67,10 +62,11 @@ class Custom_Plugin {
 
         global $post;
         if ($post) {
+            $page_id = $post->ID; 
             $tracking = new Tracking(); 
-            $tracking->track_button_display($post->ID); 
+            $tracking->track_button_display($page_id); 
         }
-        
+      
         $button_html = '<a href="' . $url . '" class="button ' . $style . '">';
 
         if ($play_icon) {
@@ -83,7 +79,6 @@ class Custom_Plugin {
 
         return $button_html;
     }
-
     
     public function track_button_click() {
         if (isset($_POST['page_id'])) {
@@ -92,6 +87,19 @@ class Custom_Plugin {
             $tracking->track_button_click($page_id); 
         }
         wp_die(); 
+    }
+    
+    public function get_button_stats() {
+        $tracking = new Tracking();
+        $total_clicks = $tracking->get_total_clicks();
+        $ctr = $tracking->get_ctr();
+    
+        $response = array(
+            'total_clicks' => $total_clicks,
+            'ctr' => $ctr
+        );
+    
+        wp_send_json($response);
     }
 }
 
