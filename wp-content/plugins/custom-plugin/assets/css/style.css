@@ -1,31 +1,27 @@
 .button {
-    display: block;
-    float: right;
-    padding: 10px 20px;
+    position: relative;
+    display: inline-block;
+    padding: 10px 30px;
     background-color: #007bff;
     color: #ffffff;
     text-decoration: none;
-    border-radius: 65px;
-    font-size: 16px;
-    border: 2px solid transparent;
-    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-    position: relative; 
+    border-radius: 50px;
+    font-size: 30px;    
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 .button:hover {
-    background-color: #51a17f;  
+    background-color: #0056b3;
 }
 
 .play-icon {
     position: absolute;
-    left: 10px; 
+    left: 20px;
     top: 50%;
     transform: translateY(-50%);
-    width: 20px; 
-    height: 20px;
-    background-image: url('wp-content/plugins/play-icon.png'); 
-    background-size: cover;
 }
+
 .button-text {
-    margin-left: 30px; 
+    margin-left: 30px;
 }

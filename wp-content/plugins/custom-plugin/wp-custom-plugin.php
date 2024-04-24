@@ -30,18 +30,23 @@ class Custom_Plugin {
     public function custom_plugin_assets() {
         wp_enqueue_style("mystyle", PLUGIN_URL . "/custom-plugin/assets/css/style.css");
 
-        wp_enqueue_script('myscript', PLUGIN_URL . '/custom-plugin/assets/js/script.js', array('jquery'), '1.0', true);
+        wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
 
+        wp_enqueue_script('myscript', PLUGIN_URL . '/custom-plugin/assets/js/script.js', array('jquery'), '1.0', true);
+        
         wp_enqueue_script('admin-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-script.js', array('jquery'), '1.0', true);
 
+        
         wp_localize_script('myscript', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
     }
 
-    public function enqueue_chart_assets() {
+     public function enqueue_chart_assets() {
+       
         wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true);
-
-        wp_enqueue_script('admin-page-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery', 'chart-js'), '1.0', true);
-    }
+        
+        wp_enqueue_script('admin-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery', 'chart-js'), '1.0', true);
+  
+     }   
     
     public function shortcode($atts) {
         $atts = shortcode_atts(
@@ -49,7 +54,7 @@ class Custom_Plugin {
                 'text' => 'Click Here',
                 'style' => 'default',
                 'url' => '#',
-                'play_icon' => false 
+                'play_icon' => true
             ),
             $atts,
             'button'
@@ -59,34 +64,33 @@ class Custom_Plugin {
         $style = $atts['style'];
         $url = esc_url($atts['url']);
         $play_icon = $atts['play_icon'];
-
+    
         global $post;
-        if ($post) {
-            $page_id = $post->ID; 
-            $tracking = new Tracking(); 
-            $tracking->track_button_display($page_id); 
-        }
-      
-        $button_html = '<a href="' . $url . '" class="button ' . $style . '">';
-
+        $page_id = ($post) ? $post->ID : 0; 
+    
+        $tracking = new Tracking(); 
+        $tracking->track_button_display($page_id); 
+    
+        $button_html = '<button class="button" data-page-id="' . esc_attr($page_id) . '">';
+    
         if ($play_icon) {
-            $button_html .= '<span class="play-icon"></span>'; 
+
+            $button_html .= '<i class ="play-icon fa fa-play-circle-o"></i>';
         }
-
+    
         $button_html .= '<span class="button-text">' . $text . '</span>';
-
-        $button_html .= '</a>';
-
+    
+        $button_html .= '</button>';
+    
         return $button_html;
     }
-    
-    public function track_button_click() {
+        public function track_button_click() {
         if (isset($_POST['page_id'])) {
             $page_id = intval($_POST['page_id']);
             $tracking = new Tracking(); 
             $tracking->track_button_click($page_id); 
         }
-        wp_die(); 
+      
     }
     
     public function get_button_stats() {

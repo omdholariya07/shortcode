@@ -69,7 +69,7 @@ class Tracking {
             return 0;
         }
     }
-    
 }
+
 
 $tracking = new Tracking();

@@ -16,15 +16,16 @@ class Custom_Admin_Page {
         );
     }
 
+
     public function admin_page() {
         ?>
 
         
 
 <div class="wrap">
-    <!-- <h1>Button Stats</h1> -->
-    <canvas id="buttonStatsChart" width="400" height="400"></canvas>
    
+    <!-- <canvas id="buttonStatsChart" width="400" height="400"></canvas> -->
+    
     <div>Total Views: <?php echo $this->get_total_views(); ?></div>
     
     
@@ -40,13 +41,10 @@ class Custom_Admin_Page {
         <input type="date" id="end_date" name="end_date">
         <input type="submit" name="submit" class="button-primary" value="Submit">
     </form>
-</div>
-
-
-
+    </div>
+        <canvas id="myChart" style="height:350px; width:70%;"></canvas>
         <?php
     }
-    
     public function get_total_views() {
         $tracking = new Tracking();
         return $tracking->get_total_views();
