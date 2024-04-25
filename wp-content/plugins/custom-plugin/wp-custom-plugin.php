@@ -24,7 +24,7 @@ class Custom_Plugin {
         add_action('wp_ajax_track_button_click', array($this, 'track_button_click'));
         add_action('wp_ajax_get_button_stats', array($this, 'get_button_stats'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_chart_assets'));
-        // add_action('wp_ajax_track_button_click', 'track_button_click');
+        add_action('wp_ajax_get_data_by_date_range', array($this, 'get_data_by_date_range'));
     }
 
     public function custom_plugin_assets() {
@@ -34,18 +34,18 @@ class Custom_Plugin {
 
         wp_enqueue_script('myscript', PLUGIN_URL . '/custom-plugin/assets/js/script.js', array('jquery'), '1.0', true);
         
-        wp_enqueue_script('admin-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-script.js', array('jquery'), '1.0', true);
-
-        
         wp_localize_script('myscript', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
     }
 
      public function enqueue_chart_assets() {
-       
-        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js', array(), '2.9.4', true);
+        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4', array(), '2.9.4', true);
         
-        wp_enqueue_script('admin-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery', 'chart-js'), '1.0', true);
-  
+       
+        wp_enqueue_script('admin-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery'), '1.0', true);
+
+        wp_localize_script('admin-script', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
+
+      
      }   
     
     public function shortcode($atts) {
@@ -74,7 +74,6 @@ class Custom_Plugin {
         $button_html = '<button class="button" data-page-id="' . esc_attr($page_id) . '">';
     
         if ($play_icon) {
-
             $button_html .= '<i class ="play-icon fa fa-play-circle-o"></i>';
         }
     
@@ -84,13 +83,13 @@ class Custom_Plugin {
     
         return $button_html;
     }
-        public function track_button_click() {
+    
+    public function track_button_click() {
         if (isset($_POST['page_id'])) {
             $page_id = intval($_POST['page_id']);
             $tracking = new Tracking(); 
             $tracking->track_button_click($page_id); 
         }
-      
     }
     
     public function get_button_stats() {
@@ -105,6 +104,17 @@ class Custom_Plugin {
     
         wp_send_json($response);
     }
+
+    public function get_data_by_date_range() {
+        $start_date = isset($_POST['start_date']) ? sanitize_text_field($_POST['start_date']) : '';
+        $end_date = isset($_POST['end_date']) ? sanitize_text_field($_POST['end_date']) : '';
+
+        $tracking = new Tracking();
+        $results = $tracking->get_data_by_date_range($start_date, $end_date);
+
+        wp_send_json($results);
+    }
+
 }
 
 $custom_plugin = new Custom_Plugin();

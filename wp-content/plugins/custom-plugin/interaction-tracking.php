@@ -11,7 +11,6 @@ class Tracking {
 
     public function create_tracking_table() {
         global $wpdb;
-      //  $charset_collate = $wpdb->get_charset_collate();
         $sql = "CREATE TABLE IF NOT EXISTS $this->table_name (
             id int(9) NOT NULL AUTO_INCREMENT,
             page_id int(20) NOT NULL,
@@ -69,7 +68,13 @@ class Tracking {
             return 0;
         }
     }
+    public function get_data_by_date_range($start_date, $end_date) {
+        global $wpdb;
+        $query = $wpdb->prepare("SELECT * FROM $this->table_name WHERE event_timestamp BETWEEN %s AND %s", $start_date, $end_date);
+        $results = $wpdb->get_results($query, ARRAY_A);     
+        return $results;
 }
-
+  
+}
 
 $tracking = new Tracking();
