@@ -7,7 +7,6 @@ jQuery(document).ready(function($) {
 
         console.log("Start Date:", start_date); 
         console.log("End Date:", end_date);     
-        console.log("AJAX URL:", ajax_object.ajaxurl); 
 
         $.ajax({
             url: ajax_object.ajaxurl,
@@ -22,10 +21,10 @@ jQuery(document).ready(function($) {
             },
             error: function(xhr, status, error) {
                 console.error('Error fetching data:', error);
-
             }
         });
-    });
+
+    });         
 
     function renderChart(data) {
         var labels = [];
@@ -45,16 +44,16 @@ jQuery(document).ready(function($) {
             data: {
                 labels: labels,
                 datasets: [{
-                    label: 'Premium Quality Views',
+                    label: 'Total Views',
                     borderColor: 'blue',    
                     data: viewsData
                 }, {
-                    label: 'Premium Quality Clicks',
+                    label: 'Total Clicks',
                     borderColor: 'green',
                     data: clicksData
                 }, {
-                    label: 'Premium Quality CTR',
-                    borderColor: 'orange',
+                    label: 'Click Through Rate (%)',
+                    borderColor: 'red',
                     data: ctrData
                 }]
             },
@@ -77,12 +76,10 @@ jQuery(document).ready(function($) {
                     y: [{
                         ticks: {
                             beginAtZero: true,
-                            stepSize: 4
                         }
                     }]
                 }
             }
         });
     }    
-        
 });

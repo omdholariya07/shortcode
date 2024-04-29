@@ -16,20 +16,14 @@ class Custom_Admin_Page {
         );
     }
 
-
     public function admin_page() {
-        ?>
-
-        
+        ?>   
 
 <div class="wrap">
-   
     
     <div>Total Views: <?php echo $this->get_total_views(); ?></div>
     
-    
     <div>Total Clicks: <?php echo $this->get_total_clicks(); ?></div>
-    
    
     <div>Click Through Rate: <?php echo $this->get_ctr(); ?>%</div>
 
@@ -60,7 +54,5 @@ class Custom_Admin_Page {
         return $tracking->get_ctr();
     }
 }
-
-
 
 $custom_admin_page = new Custom_Admin_Page();

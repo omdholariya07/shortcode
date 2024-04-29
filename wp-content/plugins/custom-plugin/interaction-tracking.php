@@ -68,13 +68,50 @@ class Tracking {
             return 0;
         }
     }
-    public function get_data_by_date_range($start_date, $end_date) {
-        global $wpdb;
-        $query = $wpdb->prepare("SELECT * FROM $this->table_name WHERE event_timestamp BETWEEN %s AND %s", $start_date, $end_date);
-        $results = $wpdb->get_results($query, ARRAY_A);     
-        return $results;
+public function get_data_by_date_range($start_date, $end_date) {
+    global $wpdb;
+
+    $data = [];
+    $current_date = strtotime($start_date);
+    $end_timestamp = strtotime($end_date);
+
+    while ($current_date <= $end_timestamp) {
+        $date = date('Y-m-d', $current_date);
+        $data[$date] = ['date' => $date, 'views' => 0, 'clicks' => 0, 'ctr' => 0];
+        $current_date = strtotime('+1 day', $current_date);
+    }
+    
+    $query = $wpdb->prepare("
+        SELECT 
+            DATE(event_timestamp) AS date, 
+            COUNT(CASE WHEN event_type = 'display' THEN 1 ELSE NULL END) AS views, 
+            COUNT(CASE WHEN event_type = 'click' THEN 1 ELSE NULL END) AS clicks 
+        FROM $this->table_name 
+        WHERE event_timestamp BETWEEN %s AND %s 
+        GROUP BY DATE(event_timestamp)", 
+        $start_date, 
+        $end_date
+    );
+
+    $results = $wpdb->get_results($query, ARRAY_A);
+    
+    foreach ($results as $result) {
+        $date = $result['date'];
+        $ctr = $this->calculate_ctr($result['clicks'], $result['views']);
+        $data[$date] = ['date' => $date, 'views' => $result['views'], 'clicks' => $result['clicks'], 'ctr' => $ctr];
+    }
+
+    $data = array_slice($data, -7);
+    return array_values($data);
 }
-  
+private function calculate_ctr($clicks, $views) {   
+        if ($views > 0) {
+            $ctr = ($clicks / $views) * 100;
+            return round($ctr, 2);
+        } else {
+            return 0;
+        }
+    }
 }
 
 $tracking = new Tracking();

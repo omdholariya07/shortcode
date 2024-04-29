@@ -111,7 +111,7 @@ class Custom_Plugin {
 
         $tracking = new Tracking();
         $results = $tracking->get_data_by_date_range($start_date, $end_date);
-
+        
         wp_send_json($results);
     }
 
