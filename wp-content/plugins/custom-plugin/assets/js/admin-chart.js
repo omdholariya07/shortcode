@@ -1,5 +1,5 @@
 jQuery(document).ready(function($) {
-    $('.button').on('click', function(e) {
+    $('.b1').on('click', function(e) {
         e.preventDefault();
 
         var start_date = $('#start_date').val();
@@ -39,7 +39,7 @@ jQuery(document).ready(function($) {
             ctrData.push(item.ctr);
         });
     
-        new Chart("myChart", {
+        new Chart("data-Chart", {
             type: "line",
             data: {
                 labels: labels,

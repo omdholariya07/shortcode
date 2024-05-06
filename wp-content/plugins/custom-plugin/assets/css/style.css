@@ -1,8 +1,16 @@
-.button {
+/* Style for container */
+.shortcode-button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center; 
+}
+
+/* Style for button */
+.shortcode-button {
     position: relative;
     display: inline-block;
     padding: 10px 30px;
-    background-color: #007bff;
+    background-color: #0573e7;
     color: #ffffff;
     text-decoration: none;
     border-radius: 50px;
@@ -11,7 +19,7 @@
     transition: background-color 0.3s ease;
 }
 
-.button:hover {
+.shortcode-button:hover {
     background-color: #0056b3;
 }
 
