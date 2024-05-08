@@ -1,0 +1,109 @@
+/* Additional styling for admin stats section */
+.admin-stats {
+    background-color: #f9f9f9; 
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+    padding: 20px;
+    margin-bottom: 30px;
+}
+.form-description h3 {
+    margin-bottom: 18px; 
+    color: #333; 
+}
+/* Styling for admin stats boxes */
+.box {
+    background-color: #fff; 
+    border: 1px solid #ddd; 
+    border-radius: 10px; 
+    padding: 20px; 
+    margin-bottom: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); 
+    transition: transform 0.3s ease; 
+}
+
+.box:hover {
+    transform: translateY(-5px); /* Move box slightly upwards on hover */
+}
+
+/* Styling for icon */
+.box i {
+    font-size: 24px; 
+    margin-right: 10px; /* Add spacing between icon and text */
+}
+
+/* Styling for text */
+.box div {
+    display: flex;
+    align-items: center;
+}
+
+.box span {
+    font-weight: bold;
+    color: #333; 
+}
+
+/* Add space between text and number */
+.box .views-number {
+    margin-left: 7px; 
+}
+
+/* Styling for views box */
+.views-box {
+    background-color: #f0f8ff; 
+    border-color: #87ceeb;
+}
+
+/* Styling for clicks box */
+.clicks-box {
+    background-color: #f0fff0; 
+    border-color: #90ee90; 
+}
+
+/* Styling for CTR box */
+.ctr-box {
+    background-color: #fdf5e6; 
+    border-color: #ffb347;
+}
+
+/* Styling for form elements */
+.form {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: space-between; 
+    align-items: center; 
+}
+
+.date-inputs {
+    display: flex;
+    align-items: center; 
+    margin: 85px;
+}
+
+.date-inputs label,
+.date-inputs input {
+    margin-right: 10px; /* Add some spacing between label and input */
+}
+
+/* Submit button styling */
+.custom-submit-button {
+    background-color: rgb(228, 116, 46);
+    border: none;
+    color: #fff; 
+    padding: 10px 20px; 
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease; 
+    margin-left: auto; 
+}
+
+.custom-submit-button:hover {
+    background-color: darkorange; 
+}
+
+/* Additional styling for the chart canvas */
+#data-Chart {
+    margin-top: 30px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2); 
+}
+

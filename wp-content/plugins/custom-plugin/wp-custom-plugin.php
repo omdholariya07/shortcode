@@ -29,25 +29,51 @@ class Custom_Plugin {
         add_shortcode('button', array($this, 'shortcode'));
         add_action('wp_ajax_track_button_click', array($this, 'track_button_click'));
         add_action('wp_ajax_get_button_stats', array($this, 'get_button_stats'));
+        add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_page_styles'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_chart_assets'));
         add_action('wp_ajax_get_data_by_date_range', array($this, 'get_data_by_date_range'));
+        add_action('wp_ajax_nopriv_get_data_by_date_range', 'get_data_by_date_range');
     }
 
-    // Enqueue assets for frontend
-    public function custom_plugin_assets() {
-        wp_enqueue_style("my-main-style", PLUGIN_URL . "/custom-plugin/assets/css/style.css"); 
-        wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
-        wp_enqueue_style("my-admin-style", PLUGIN_URL . "/custom-plugin/assets/css/admin-page.css"); 
-        wp_enqueue_script('my-main-script', PLUGIN_URL . '/custom-plugin/assets/js/script.js', array('jquery'), '1.0', true); 
-        wp_localize_script('my-main-script', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
-    }
+ // Enqueue assets for frontend
+ public function custom_plugin_assets() {
+    // Enqueue button-style.css
+    wp_enqueue_style("button-style", PLUGIN_URL . "/custom-plugin/assets/css/button-style.css"); 
     
-    // Enqueue assets for admin dashboard
-    public function enqueue_chart_assets() {
-        wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4', array(), '2.9.4', true);
-        wp_enqueue_script('my-admin-chart-script', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery'), '1.0', true); 
-        wp_localize_script('my-admin-chart-script', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
+    // Enqueue Font Awesome
+    wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
+    // Enqueue button-script.js
+    wp_enqueue_script('button-script', PLUGIN_URL . '/custom-plugin/assets/js/button-script.js', array('jquery'), '1.0', true); 
+    
+    // Localize button-script.js
+    wp_localize_script('button-script', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
+}
+
+// Enqueue assets for admin page
+public function enqueue_chart_assets() {
+    // Enqueue Chart.js
+    wp_enqueue_script('chart-js', 'https://cdn.jsdelivr.net/npm/chart.js@2.9.4', array(), '2.9.4', true);
+    
+    // Enqueue admin-chart.js
+    wp_enqueue_script('admin-chart', PLUGIN_URL . '/custom-plugin/assets/js/admin-chart.js', array('jquery'), '1.0', true); 
+    
+    // Localize admin-chart.js
+    wp_localize_script('admin-chart', 'ajax_object', array('ajaxurl' => admin_url('admin-ajax.php')));
+}
+
+
+// Enqueue styles for admin page
+public function enqueue_admin_page_styles() {
+    // Enqueue admin page styles
+    wp_enqueue_style("admin-page-styles", PLUGIN_URL . "/custom-plugin/assets/css/admin-page-style.css"); 
+    
+    // Enqueue Font Awesome
+    if (!wp_style_is('font-awesome', 'enqueued')) {
+        wp_enqueue_style('font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
     }
+}
+
 // Shortcode function for generating button
 public function shortcode($atts) {
     // Parse shortcode attributes
@@ -65,10 +91,10 @@ public function shortcode($atts) {
 
     // Extract shortcode attributes
     $text = $atts['text'];
-    $style = $atts['style']; // Get the style attribute
+    $style = $atts['style']; 
     $url = esc_url($atts['url']);
     $play_icon = $atts['play_icon'];
-    $color = $atts['color']; // Get button color
+    $color = $atts['color']; 
 
     // Get current page ID
     global $post;
@@ -82,7 +108,7 @@ public function shortcode($atts) {
     $message_html = '<h6>Click on the below button which will take you to another page</h6>';
 
     // Generate button HTML with data attributes for URL, style, and page ID
-    $button_html = '<div class="shortcode-button-container">' . // Wrap the button with a container
+    $button_html = '<div class="shortcode-button-container">' .
                     '<button class="shortcode-button" data-page-id="' . esc_attr($page_id) . '" data-redirect-url="' . $url . '" style="' . $style . '">'; 
     if ($play_icon) {
         $button_html .= '<i class ="play-icon fa fa-play-circle-o"></i>';
@@ -121,15 +147,15 @@ public function shortcode($atts) {
     }
 
     // AJAX callback to get data by date range for chart
-    public function get_data_by_date_range() {
-        $start_date = isset($_POST['start_date']) ? sanitize_text_field($_POST['start_date']) : '';
-        $end_date = isset($_POST['end_date']) ? sanitize_text_field($_POST['end_date']) : '';
+public function get_data_by_date_range() {
+    $start_date = isset($_POST['start_date']) ? sanitize_text_field($_POST['start_date']) : '';
+    $end_date = isset($_POST['end_date']) ? sanitize_text_field($_POST['end_date']) : '';
 
-        $tracking = new Tracking();
-        $results = $tracking->get_data_by_date_range($start_date, $end_date);
-        
-        wp_send_json($results);
-    }
+    $tracking = new Tracking();
+    $results = $tracking->get_data_by_date_range($start_date, $end_date);
+    
+    wp_send_json($results);
+}
 
 }
 

@@ -17,36 +17,64 @@ class Custom_Admin_Page {
             "dashicons-dashboard", // Icon
             11 // Position
         );
-    }
+    }   
 
-    // Callback function to display admin page content
+    // Callback function to display admin page content  
     public function admin_page() {
-        ?>   
+        ?>
+<div class="wrap">
+    <div class="admin-stats">
+        <div class="box">
+            <div class="box views-box">
+                <!-- Apply views-box class to the box for Total Views -->
+                <div>
+                    <i class="fa fa-eye"></i> Total Views: <span
+                        class="views-number"><?php echo $this->get_total_views(); ?></span>
+                </div>
+            </div>
 
-        <div class="wrap">
-            
-            <div>Total Views: <?php echo $this->get_total_views(); ?></div> <!-- Display total views -->
-            
-            <div>Total Clicks: <?php echo $this->get_total_clicks(); ?></div> <!-- Display total clicks -->
-           
-            <div>Click Through Rate: <?php echo $this->get_ctr(); ?>%</div> <!-- Display click-through rate -->
+            <div class="box clicks-box">
+                <!-- Apply clicks-box class to the box for Total Clicks -->
+                <div>
+                    <i class="fa fa-mouse-pointer"></i> Total Clicks: <span
+                        class="views-number"><?php echo $this->get_total_clicks(); ?></span>
+                </div>
+            </div>
 
-            <!-- Form to select date range -->
-            <form method="post" action="">
-                <h3>Select start and end date and click submit button it will generate graph between selected date.</h3>
-                <label for="start_date">Start Date:</label>
-                <input type="date" id="start_date" name="start_date"> 
-                <label for="end_date">End Date:</label>
-                <input type="date" id="end_date" name="end_date">
-                <input type="submit" name="submit" class="b1" value="Submit">
-                <h3>Graph should display total views,total clicks, and click through rate.</h3>
-            </form>
+            <div class="box ctr-box">
+                <!-- Apply ctr-box class to the box for Click Through Rate -->
+                <div>
+                    <i class="fa fa-hand-o-up"></i> Click Through Rate: <span
+                        class="views-number"><?php echo $this->get_ctr(); ?>%</span>
+                </div>
+            </div>
+
         </div>
 
-        <!-- Canvas for chart -->
-        <canvas id="data-Chart" style="height:350px; width:80%;"></canvas>
+        <!-- Form to select date range -->
+        <form method="post" action="" class="form">
+            <div class="form-description">
+                
+                <h3>Select start and end date and click submit button to generate a graph between the selected dates
+                </h3>
+                <h3>The graph below shows the data for the last 7 days</h3>
+            </div>
+            <div class="date-inputs">
+                <label for="start_date">Start Date:</label>
+                <input type="date" id="start_date" name="start_date"
+                    value="<?php echo date('Y-m-d', strtotime('-7 days')); ?>">
+                <label for="end_date">End Date:</label>
+                <input type="date" id="end_date" name="end_date" value="<?php echo date('Y-m-d'); ?>">
+            </div>
+            <input type="submit" name="submit" class="custom-submit-button" value="Submit">
+        </form>
+    </div>
 
-        <?php
+    <!-- Canvas for chart -->
+    <canvas id="data-Chart" style="height:350px; width:80%;"></canvas>
+</div>
+
+<?php
     }
 
     // Method to get total views

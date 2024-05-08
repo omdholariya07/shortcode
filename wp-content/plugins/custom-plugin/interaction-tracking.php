@@ -113,8 +113,6 @@ class Tracking {
             $data[$date] = ['date' => $date, 'views' => $result['views'], 'clicks' => $result['clicks'], 'ctr' => $ctr];
         }
 
-        // Limit data to last 7 days and return
-        $data = array_slice($data, -7);
         return array_values($data);
     }
 
